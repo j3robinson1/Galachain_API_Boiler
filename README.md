@@ -65,10 +65,4 @@ node localContractApi.js
 
 [http://localhost:4000](http://localhost:4000)
 
----# Galachain_API_Boilerplate
-# Galachain_API_Boiler
-# Galachain_API_Boiler
-# Galachain_API_Boiler
-# Galachain_API_Boiler
-# Galachain_API_Boiler
-# Galachain_API_Boiler
+---
