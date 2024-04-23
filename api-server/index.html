@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Endpoints</title>
+    <style>
+        body { font-family: Arial,sans-serif; background: #1f1f1f; color: white; }
+        pre { background-color: #363636; padding: 10px; overflow-x: scroll; padding-right: 80px; }
+        ul { padding: 0px; }
+        h1 {
+            margin: 35px 0px;
+        }
+        .container {
+            max-width: 1080px;
+            margin: auto;
+        }
+        li {
+            list-style: none;
+            padding-bottom: 25px;
+        }
+        button.copy {
+            float: right;
+            transform: translate(-5px, 35px);
+            background: #191919;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor:pointer;
+        }
+        #statusContainer p {
+            background: #353535;
+            padding: 10px .5%;
+            margin: .4%;
+            display: inline-block;
+            width: 31%;
+        }
+        #statusContainer {
+            text-align: center;
+            border: 3px double #8c8c8c;
+            padding: 1% 0.5%;
+        }
+        ul.quicklinks li a {
+            color: black;
+            text-decoration: none;
+        }
+        ul.quicklinks li {
+            display: inline-block;
+            padding: 5px;
+            margin-right: 10px;
+            background: #ffffffa6;
+        }
+        h3 {
+            margin-top: 40px;
+        }
+        #nonApiMessage { background-color: #4f1b1a; padding: 5px 20px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="nonApiMessage">
+            <p>You have reached: <strong id="currentUrl"></strong></p>
+            <p>This is not an active API endpoint.</p>
+        </div>
+        <div id="statusContainer">
+            <p><strong>Node API Status:</strong> <span id="apiStatus">Checking...</span></p>
+            <p><strong>Galachain API Status:</strong> <span id="galachainApiStatus">Checking...</span></p>
+            <p><strong>Galachain Status:</strong> <span id="galachainStatus">Checking...</span></p>
+        </div>
+        <h3>Quicklinks</h3>
+        <ul class="quicklinks">
+            <li><a href="http://localhost:3010/blocks" target="_blank">Block Explorer</a></li>
+            <li><a href="http://localhost:3010/graphiql" target="_blank">GraphQL</a></li>
+            <li><a href="https://github.com/j3robinson1/gc-magnetohr" target="_blank">Getting Started</a></li>
+        </ul>
+        <h1>Available API Endpoints</h1>
+        <ul>
+            <li>
+                <b>GET /test-client</b> - Test the configuration of the public key client.<button class="copy" onclick="copyToClipboard('#pre1')">Copy</button>
+                <pre id="pre1">curl -X GET "http://localhost:4000/test-client"</pre>
+            </li>
+            <li>
+                <b>POST /registerUser</b> - Register a new user with their public key.<button class="copy" onclick="copyToClipboard('#pre2')">Copy</button>
+                <pre id="pre2">curl -X POST http://localhost:4000/registerUser \<br>-H "Content-Type: application/json" \<br>-d '{"user": "client|NewUser01"}'</pre>
+            </li>
+            <li>
+                <b>POST /createTokenClass</b> - Create a new token class.<button class="copy" onclick="copyToClipboard('#pre3')">Copy</button>
+                <pre id="pre3">curl -X POST http://localhost:4000/createTokenClass \<br>-H "Content-Type: application/json" \<br>-d '{<br>"network": "GC",<br> "tokenClass": {<br>"collection": "Membership",<br>"category": "Employer",<br>"type": "Standard",<br>"additionalKey": "Epic"<br>},<br>"isNonFungible": true,<br>"decimals": 0,<br>"name": "Standard Membership",<br>"symbol": "MBRE",<br>"description": "A detailed description of the token.",<br>"rarity": "Epic",<br>"image": "https://example.com/image.png",<br>"metadataAddress": "https://example.com/metadata.json",<br>"contractAddress": "none",<br>"maxSupply": "10000",<br>"maxCapacity": "10000",<br>"totalMintAllowance": "5000000",<br>"totalSupply": "0",<br>"totalBurned": "0"<br>}'</pre>
+            </li>
+            <li>
+                <b>POST /grantAllowance</b> - Gives authority to mint token instances. <span style="color:rgb(164, 164, 164);">DEV ONLY: Must grant allowance to client|admin</span><button class="copy" onclick="copyToClipboard('#pre4')">Copy</button>
+                <pre id="pre4">curl -X POST http://localhost:4000/grantAllowance \<br>-H "Content-Type: application/json" \<br>-d '{<br>"collection": "Membership",<br>"category": "Employer",<br>"type": "Standard",<br>"additionalKey": "Epic",<br>"allowanceType": 4,<br>"quantities": [{<br>"user": "client|admin",<br>"quantity": "1"<br>}],<br>"uses": "5"<br>}'</pre>
+            </li>
+            <li>
+                <b>POST /mintToken</b> - Mints token instances. <span style="color:rgb(164, 164, 164);">DEV ONLY: client|admin signs private key to authorize mint.</span><button class="copy" onclick="copyToClipboard('#pre5')">Copy</button>
+                <pre id="pre5">curl -X POST http://localhost:4000/mintToken \<br>-H "Content-Type: application/json" \<br>-d '{<br>"tokenClassKey": {<br>"collection": "Membership",<br>"category": "Employer",<br>"type": "Standard",<br>"additionalKey": "Epic"<br>},<br>"owner": "client|NewUser01",<br>"quantity": "1"<br>}'</pre>
+            </li>
+            <li>
+                <b>GET /getBalances</b> - Retrieve the token balances for a user.<button class="copy" onclick="copyToClipboard('#pre6')">Copy</button>
+                <pre id="pre6">curl -X GET "http://localhost:4000/getBalances?userId=client|NewUser01" \<br>-H "Content-Type: application/json"</pre>
+            </li>
+            <li>
+                <b>GET /getAllowances</b> - Retrieve the token allowances for a user.<button class="copy" onclick="copyToClipboard('#pre7')">Copy</button>
+                <pre id="pre7">curl -X GET "http://localhost:4000/getAllowances?tokenInstanceKey=Membership$Employer$Standard$Epic$0&user=client|admin&grantedTo=client|NewUser01" \<br>-H "Content-Type: application/json"</pre>
+            </li>
+        </ul>
+    </div>
+    <script>
+        document.getElementById('currentUrl').textContent = window.location.href;
+
+        function copyToClipboard(element) {
+            var text = document.querySelector(element);
+            navigator.clipboard.writeText(text.textContent).then(function() {
+                alert('Copied to clipboard!');
+            }).catch(function(err) {
+                alert('Error in copying text: ', err);
+            });
+        }
+
+        function checkApiStatus() {
+            document.getElementById('apiStatus').textContent = 'Online';
+        }
+
+        function checkGalachainApiStatus() {
+            fetch('http://localhost:8801')
+                .then(response => {
+                    document.getElementById('galachainApiStatus').textContent = response ? 'Online' : 'Offline';
+                })
+                .catch(() => {
+                    document.getElementById('galachainApiStatus').textContent = 'Offline';
+                });
+        }
+
+        function checkGalachainStatus() {
+            fetch('http://localhost:3010/product-channel/blocks')
+                .then(response => {
+                    document.getElementById('galachainStatus').textContent = response.ok ? 'Online' : 'Offline';
+                })
+                .catch(() => {
+                    document.getElementById('galachainStatus').textContent = 'Offline';
+                });
+        }
+
+        checkApiStatus();
+        checkGalachainStatus();
+        checkGalachainApiStatus();
+    </script>
+</body>
+</html>
